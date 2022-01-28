@@ -1,0 +1,533 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.2 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>개인서버에 센트리 설치! - PJHDEV</title>
+<meta name="description" content="운영중인 개인 서버에 프로젝트들의 로그 및 버그 수집을 위해 센트리를 설치하려 한다. 오픈소스인 센트리를 on-premise 방식으로 설치하기 위해서는 아래의 요구사항이 있다. ">
+
+
+  <meta name="author" content="Your Name">
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="PJHDEV">
+<meta property="og:title" content="개인서버에 센트리 설치!">
+<meta property="og:url" content="http://localhost:4000/development/sentry/install-sentry">
+
+
+  <meta property="og:description" content="운영중인 개인 서버에 프로젝트들의 로그 및 버그 수집을 위해 센트리를 설치하려 한다. 오픈소스인 센트리를 on-premise 방식으로 설치하기 위해서는 아래의 요구사항이 있다. ">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2020-03-26T14:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/development/sentry/install-sentry">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Park Jun Ho",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="PJHDEV Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--posts">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          PJHDEV
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/">Quick-Start Guide</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+  </ul>
+</nav>
+
+    
+  
+  </div>
+
+
+
+  <div class="archive">
+    
+      <h1 id="page-title" class="page__title">개인서버에 센트리 설치!</h1>
+    
+    <p>운영중인 개인 서버에 프로젝트들의 로그 및 버그 수집을 위해 센트리를 설치하려 한다.
+오픈소스인 센트리를 on-premise 방식으로 설치하기 위해서는 아래의 요구사항이 있다.</p>
+
+<p>[설치 전 준비사항]</p>
+<ul>
+  <li>Docker 17.05.0+</li>
+  <li>Docker Compose 1.19.0+</li>
+  <li>A dedicated (sub)domain to host Sentry on (for example, sentry.yourcompany.com).</li>
+  <li>At least 2400MB memory</li>
+  <li>2 CPU Cores</li>
+</ul>
+
+<h3 id="도커--도커-컴포스-설치">도커 &amp; 도커 컴포스 설치<br /></h3>
+<p>온프레미스 방식으로 제공되는 센트리는 서버의 도커 컨테이너 위에서 동작하기 때문에 도커 설치가 필요하다.
+영어에 능숙하다면 <a href="https://docs.docker.com/install/linux/docker-ce/centos/">공식 사이트의 가이드</a> 가 잘 나와있어 해당 가이드를 참고하면 된다.</p>
+
+<ol>
+  <li>구버전의 도커가 설치되어 있는 경우 제거
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum remove docker \
+               docker-client \
+               docker-client-latest \
+               docker-common \
+               docker-latest \
+               docker-latest-logrotate \
+               docker-logrotate \
+               docker-engine
+</code></pre></div>    </div>
+  </li>
+  <li>도커설치에 필요한 필수 패키지 설치
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+</code></pre></div>    </div>
+  </li>
+  <li>stable(안정된 버전의) 도커 저장소 추가
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum-config-manager \
+ --add-repo \
+ https://download.docker.com/linux/centos/docker-ce.repo
+</code></pre></div>    </div>
+  </li>
+  <li>도커 설치 &amp; 실행
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+</code></pre></div>    </div>
+  </li>
+  <li>도커 컴포즈 설치<br />
+(여러개의 컨테이너를 한번에 관리하기에 유용한 도구)
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+</code></pre></div>    </div>
+    <p>바이너리 파일 실행권한 추가</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo chmod +x /usr/local/bin/docker-compose
+</code></pre></div>    </div>
+    <p>설치가 잘 되었는지 아래 명령어로 확인</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose --version
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>위의 과정까지 마쳤다면 실질적으로 센트리 설치를 위한 준비가 완료되었다고 봐도 된다.
+(서버 사양의 문제는 해결할 수 없으니..)</p>
+
+<h3 id="센트리-설치">센트리 설치<br /></h3>
+<p>센트리 가이드를 가보면 알겠지만, 가이드가 심플한만큼 설치과정이 매우 간단하다. 이는 도커를 이용하기 때문이다.
+쉘을 실행하면, 필요한 디펜던시 및 도커이미지를 등록하여 센트리를 구동하는데 필요한 각종 서비스를 구성 및 실행해준다.</p>
+
+<ol>
+  <li>센트리 온프레미스 저장소  &amp; 실행
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/getsentry/onpremise.git
+cd onpremise
+./install.sh
+</code></pre></div>    </div>
+    <p>이후 도커 이미지 풀 &amp; 실행이 자동으로 완료되며 설치가 끝나면 센트리의 계정 생성을 하겠냐는 터미널 메세지가 출력된다. 생성을 해주자.</p>
+    <ul>
+      <li><img src="/assets/images/sentry-create-user.png" alt="Image Alt 텍스트" />
+이후 아래의 창이 뜨면서 설치가 완료된다.</li>
+      <li><img src="/assets/images/sentry-install-done.png" alt="Image Alt 텍스트" />
+아래 명렁어를 실행해서 센트리를 실행시키자.<br />
+명령어를 보면 알겠지만, 컨테이너 하나를 실행시키는게 아닌, 구성된 모든 컨테이너를 한번에 실행시키는 것이다.
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose up -d
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<ul>
+  <li>삽질한 포인트들
+    <ol>
+      <li>./install.sh 했지만 아래의 에러가 발생
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traceback (most recent call last):
+  File "/usr/local/bin/sentry", line 8, in &lt;module&gt;
+ sys.exit(main())
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/__init__.py", line 164, in main
+ cli(prog_name=get_prog(), obj={}, max_content_width=100)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 722, in __call__
+ return self.main(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 697, in main
+ rv = self.invoke(ctx)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 1066, in invoke
+ return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 895, in invoke
+ return ctx.invoke(self.callback, **ctx.params)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 535, in invoke
+ return callback(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/decorators.py", line 17, in new_func
+ return f(get_current_context(), *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/decorators.py", line 30, in inner
+ return ctx.invoke(f, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 535, in invoke
+ return callback(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/decorators.py", line 17, in new_func
+ return f(get_current_context(), *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 168, in upgrade
+ _upgrade(not noinput, traceback, verbosity, not no_repair)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 121, in _upgrade
+ _migrate_from_south(verbosity)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 93, in _migrate_from_south
+ if not _has_south_history(connection):
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 78, in _has_south_history
+ cursor = connection.cursor()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 254, in cursor
+ return self._cursor()
+  File "/usr/local/lib/python2.7/site-packages/sentry/db/postgres/decorators.py", line 44, in inner
+ return func(self, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/db/postgres/base.py", line 99, in _cursor
+ cursor = super(DatabaseWrapper, self)._cursor()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 229, in _cursor
+ self.ensure_connection()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 213, in ensure_connection
+ self.connect()
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 94, in __exit__
+ six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 213, in ensure_connection
+ self.connect()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 189, in connect
+ self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/postgresql/base.py", line 176, in get_new_connection
+ connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py", line 126, in connect
+ conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not connect to server: No route to host
+ Is the server running on host "postgres" (172.22.0.3) and accepting
+ TCP/IP connections on port 5432?
+</code></pre></div>        </div>
+        <p>원인은 확실하게 알 수 없으나 docker-compose.yml 내의 postgresql 버전을 9.6 -&gt; 10 으로 변경 후 해결됨.</p>
+      </li>
+      <li>
+        <ol>
+          <li>을 해결하고서 다시 ./install.sh 해도 아래의 에러가 발생
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>raceback (most recent call last):
+  File "/usr/local/bin/sentry", line 8, in &lt;module&gt;
+ sys.exit(main())
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/__init__.py", line 164, in main
+ cli(prog_name=get_prog(), obj={}, max_content_width=100)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 722, in __call__
+ return self.main(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 697, in main
+ rv = self.invoke(ctx)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 1066, in invoke
+ return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 895, in invoke
+ return ctx.invoke(self.callback, **ctx.params)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 535, in invoke
+ return callback(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/decorators.py", line 17, in new_func
+ return f(get_current_context(), *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/decorators.py", line 30, in inner
+ return ctx.invoke(f, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 535, in invoke
+ return callback(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/decorators.py", line 17, in new_func
+ return f(get_current_context(), *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 168, in upgrade
+ _upgrade(not noinput, traceback, verbosity, not no_repair)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 121, in _upgrade
+ _migrate_from_south(verbosity)
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 93, in _migrate_from_south
+ if not _has_south_history(connection):
+  File "/usr/local/lib/python2.7/site-packages/sentry/runner/commands/upgrade.py", line 78, in _has_south_history
+ cursor = connection.cursor()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 254, in cursor
+ return self._cursor()
+  File "/usr/local/lib/python2.7/site-packages/sentry/db/postgres/decorators.py", line 44, in inner
+ return func(self, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/sentry/db/postgres/base.py", line 99, in _cursor
+ cursor = super(DatabaseWrapper, self)._cursor()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 229, in _cursor
+ self.ensure_connection()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 213, in ensure_connection
+ self.connect()
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 94, in __exit__
+ six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 213, in ensure_connection
+ self.connect()
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 189, in connect
+ self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/postgresql/base.py", line 176, in get_new_connection
+ connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python2.7/site-packages/psycopg2/__init__.py", line 126, in connect
+ conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: fe_sendauth: no password supplied
+</code></pre></div>            </div>
+            <p>해당 에러는, 센트리에서 사용하는 rdb 인 postgresql 의 초기 비밀번호가 설정되어 있지 않아서 발생한 문제이다.
+clone 한 폴더의 sentry 경로 내의 <em>sentry.conf.py</em> 파일을 에디터로 열어 패스워드 부분을 입력한다.<br />
+<img src="/assets/images/postgres-set-password.png" alt="Image Alt 텍스트" /></p>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+
+<ul class="taxonomy__index">
+  
+  
+    <li>
+      <a href="#2020">
+        <strong>2020</strong> <span class="taxonomy__count">2</span>
+      </a>
+    </li>
+  
+</ul>
+
+
+
+  <section id="2020" class="taxonomy__section">
+    <h2 class="archive__subtitle">2020</h2>
+    <div class="entries-list">
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/development/" rel="permalink">A list of animals
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/note/study-list/" rel="permalink">공부해야할 것
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">php tdd
+</p>
+  </article>
+</div>
+
+      
+    </div>
+    <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+  </section>
+
+
+  </div>
+</div>
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Park Jun Ho. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

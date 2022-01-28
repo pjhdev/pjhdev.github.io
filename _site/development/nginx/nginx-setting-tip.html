@@ -1,0 +1,427 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.2 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Nginx 설정 팁 - PJHDEV</title>
+<meta name="description" content="Nginx는 C언어와 유사한 문법을 통해서 웹서버를 유연하게 다룰 수 있다. 필자는 Nginx에 대하여 완벽하게 문법을 이해하고 있는 상태는 아니지만, 몇몇의 자주 사용하게 되는 기능들을 정리해 놓고자 한다. 이건 필자가 주로 사용하는 기능이라는 의미이며 Nginx를 처음 다루는 사용자가 보면 도움이 되지 않을까 싶다. ">
+
+
+  <meta name="author" content="Your Name">
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="PJHDEV">
+<meta property="og:title" content="Nginx 설정 팁">
+<meta property="og:url" content="http://localhost:4000/development/nginx/nginx-setting-tip">
+
+
+  <meta property="og:description" content="Nginx는 C언어와 유사한 문법을 통해서 웹서버를 유연하게 다룰 수 있다. 필자는 Nginx에 대하여 완벽하게 문법을 이해하고 있는 상태는 아니지만, 몇몇의 자주 사용하게 되는 기능들을 정리해 놓고자 한다. 이건 필자가 주로 사용하는 기능이라는 의미이며 Nginx를 처음 다루는 사용자가 보면 도움이 되지 않을까 싶다. ">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2020-03-29T14:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/development/nginx/nginx-setting-tip">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Park Jun Ho",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="PJHDEV Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--posts">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          PJHDEV
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/">Quick-Start Guide</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+  </ul>
+</nav>
+
+    
+  
+  </div>
+
+
+
+  <div class="archive">
+    
+      <h1 id="page-title" class="page__title">Nginx 설정 팁</h1>
+    
+    <p>Nginx는 C언어와 유사한 문법을 통해서 웹서버를 유연하게 다룰 수 있다. 필자는 Nginx에 대하여 완벽하게 문법을 이해하고 있는 상태는 아니지만, 몇몇의 자주 사용하게 되는 기능들을 정리해 놓고자 한다. 이건 필자가 주로 사용하는 기능이라는 의미이며 Nginx를 처음 다루는 사용자가 보면 도움이 되지 않을까 싶다.</p>
+
+<h3 id="리디렉션">리디렉션</h3>
+<h2 id="도메인-리디렉션">도메인 리디렉션</h2>
+<p>어떤 도메인에 접근했을 때 다른 도메인으로 보내주려면 아래와 같이 작성한다. CNAME으로 넘겨주는 방법도 있겠지만 홈페이지의 도메인을 변경했을때 SEO에 적은 영향을 미치게 하고 싶어 이와같이 하였다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>return 301 https://www.$server_name$request_uri;
+</code></pre></div></div>
+
+<h2 id="특정-url-리디렉션">특정 URL 리디렉션</h2>
+<p>URL이 변경되어 특정 위치에 접근했을때 다른 페이지로 념겨주려면 아래와 같이 작성한다. 코드는 필자의 (도메인을 생략한)블로그의 링크를 예시로 들었다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location = /programing/Qt-Connect {
+    return 301 /qt/connect;
+}
+</code></pre></div></div>
+
+<h2 id="https-리디렉션">HTTPS 리디렉션</h2>
+<p>사용자가 http로 접근했을때 https로 리디렉션 해주려면 아래와 같이 작성한다. 클라우드 플레어를 사용한다면 기본적으로 적용되므로 안해줘도 된다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ($scheme = http) {
+    return 301 https://$server_name$request_uri;
+}
+</code></pre></div></div>
+
+<h3 id="404-403-페이지-설정">404, 403 페이지 설정</h3>
+<p>404(Not Found) 혹은 403(Fobidden) 에러가 발생했을 때 접속한 사용자에게 커스텀 된 페이지를 보여준다. 가령 404 에러가 발생했을때 비슷한 문서를 찾을 수 있도록 검색 페이지를 제공해 줄 수 있다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>error_page 404 /404.html;
+    location /404.html {
+    internal;
+}
+
+error_page 403 /403.html;
+    location /403.html {
+    internal;
+}
+</code></pre></div></div>
+<p>이제 커스텀 된 페이지를 /404.html에 작성해 두면 되겠다.</p>
+
+<h3 id="특정-파일-접근-차단">특정 파일 접근 차단</h3>
+<p>어떤 파일 확장자에만 접근을 불가능하게 하고 싶다면 아래와 같이 작성해 줄 수 있다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location ~ \.txt$ {
+    return 403;
+}
+</code></pre></div></div>
+<p>위와같이 작성하면 모든 텍스트파일의 접근을 차단한다.</p>
+
+<h3 id="url에서-html-없애기">URL에서 HTML 없애기</h3>
+<p>about.html에 있는 파일이지만 about로 접근할때 보여줄 수 있는 방법이다. URL이 깔끔하게 보여진다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try_files $uri $uri.html $uri/ =404;
+</code></pre></div></div>
+<p>about으로 접근했을때 about.html을 먼저 찾아보고 없다면 about/index.html을 찾아 볼 것이다. 그래도 없으면 404 에러가 발생한다.</p>
+
+<h3 id="디렉토리에-비밀번호-걸기">디렉토리에 비밀번호 걸기</h3>
+<p>특정 디렉토리로 접근할때 사용자/비밀번호를 입력하도록 하는 방법은 다음과 같다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location /Private/ {
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/private/.htpasswd;
+}
+</code></pre></div></div>
+<p>.htpasswd는 아파치 유틸을 이용해서 생성해 주어야 한다. 생성 방법</p>
+
+<h3 id="프록시-패스">프록시 패스</h3>
+<p>장고나 Node.js를 사용하는 경우 프록시 패스를 사용하여 Nginx에서 접근하게 할 수 있다. 필자의 경우에는 특정 도메인에 적용하고 싶어서 사용하였다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location / {
+    proxy_pass http://127.0.0.1:8000/;
+}
+</code></pre></div></div>
+
+<h3 id="스태틱-파일-캐시">스태틱 파일 캐시</h3>
+<p>이미지 파일이나 스타일시트, 스크립트 파일은 캐시시켜서 사용자의 로딩속도를 향상시키고 궁극적으로 이탈률을 줄이는 효과가 있다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location ~* \.(?:jpg|jpeg|png|gif|ico|gz|svg|svgz|ogg|mp4|webm|ogv|htc|cur)$ {
+    valid_referers none blocked blex.kr *.blex.kr;
+    if ($invalid_referer) {
+        return 403;
+    }
+    expires 3M;
+    access_log off;
+    add_header Cache-Control "public";
+}
+
+location ~* \.(?:css|js)$ {
+    expires 1M;
+    access_log off;
+    add_header Cache-Control "public";
+}
+
+location = /favicon.ico {
+    expires max;
+    access_log off;
+    log_not_found off;
+}
+</code></pre></div></div>
+
+<h3 id="핫링크-차단">핫링크 차단</h3>
+<p>다른 도메인에서 내 사이트의 이미지를 가져가는 것을 hotlink라고 부른다. 이를 아래와같이 차단할 수 있다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location ~* \.(?:jpg|jpeg|png|gif|ico|gz|svg|svgz|ogg|mp4|webm|ogv|htc|cur)$ {
+    valid_referers none blocked mydomain.com *.mydomain.com;
+    if ($invalid_referer) {
+        return 403;
+    }
+}
+</code></pre></div></div>
+
+<h3 id="업로드-사이즈">업로드 사이즈</h3>
+<p>PHP 등을 활용하고 있는 경우 일정 사이즈가 넘어가는 파일은 업로드가 불가하다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client_max_body_size 10M;
+</code></pre></div></div>
+
+
+<ul class="taxonomy__index">
+  
+  
+    <li>
+      <a href="#2020">
+        <strong>2020</strong> <span class="taxonomy__count">2</span>
+      </a>
+    </li>
+  
+</ul>
+
+
+
+  <section id="2020" class="taxonomy__section">
+    <h2 class="archive__subtitle">2020</h2>
+    <div class="entries-list">
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/development/" rel="permalink">A list of animals
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/note/study-list/" rel="permalink">공부해야할 것
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">php tdd
+</p>
+  </article>
+</div>
+
+      
+    </div>
+    <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+  </section>
+
+
+  </div>
+</div>
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Park Jun Ho. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.2 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>루비 클래스 변수와 인스턴스 변수 - PJHDEV</title>
+<meta name="description" content="클래스가 데이터를보다 쉽게 ​​공유하기 위해 사용할 수있는 몇 가지 특수 변수 유형이 있습니다. 인스턴스 변수 앞에는 @ 붙습니다. 다른 메소드에서 동일한 변수를 사용하려는 경우 유용합니다. ~~~ class Person   def initialize(name, age)     my_age = age # local variable, will be destroyed at end of constructor     @name = name # instance variable, is only destroyed when the object is   end ">
+
+
+  <meta name="author" content="Your Name">
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="PJHDEV">
+<meta property="og:title" content="루비 클래스 변수와 인스턴스 변수">
+<meta property="og:url" content="http://localhost:4000/development/rails/class-variable-and-instance-variable">
+
+
+  <meta property="og:description" content="클래스가 데이터를보다 쉽게 ​​공유하기 위해 사용할 수있는 몇 가지 특수 변수 유형이 있습니다. 인스턴스 변수 앞에는 @ 붙습니다. 다른 메소드에서 동일한 변수를 사용하려는 경우 유용합니다. ~~~ class Person   def initialize(name, age)     my_age = age # local variable, will be destroyed at end of constructor     @name = name # instance variable, is only destroyed when the object is   end ">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2020-03-26T14:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/development/rails/class-variable-and-instance-variable">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Park Jun Ho",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="PJHDEV Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--posts">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          PJHDEV
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/">Quick-Start Guide</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle menu</label>
+  <ul class="nav__items">
+    
+  </ul>
+</nav>
+
+    
+  
+  </div>
+
+
+
+  <div class="archive">
+    
+      <h1 id="page-title" class="page__title">루비 클래스 변수와 인스턴스 변수</h1>
+    
+    <p>클래스가 데이터를보다 쉽게 ​​공유하기 위해 사용할 수있는 몇 가지 특수 변수 유형이 있습니다.
+인스턴스 변수 앞에는 @ 붙습니다. 다른 메소드에서 동일한 변수를 사용하려는 경우 유용합니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Person
+  def initialize(name, age)
+    my_age = age # local variable, will be destroyed at end of constructor
+    @name = name # instance variable, is only destroyed when the object is
+  end
+
+  def some_method
+    puts "My name is #{@name}." # we can use @name with no problem
+  end
+
+  def another_method
+    puts "My age is #{my_age}." # this will not work!
+  end
+end
+
+mhmd = Person.new("Mark", 23)
+
+mhmd.some_method #=&gt; My name is Mark.
+mhmd.another_method #=&gt; throws an error
+</code></pre></div></div>
+<p>클래스 변수 앞에 @@ . 클래스의 모든 인스턴스에서 동일한 값을 포함합니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Person
+  @@persons_created = 0 # class variable, available to all objects of this class
+  def initialize(name)
+    @name = name
+
+    # modification of class variable persists across all objects of this class
+    @@persons_created += 1
+  end
+
+  def how_many_persons
+    puts "persons created so far: #{@@persons_created}"
+  end
+end
+
+mark = Person.new("Mark")
+mark.how_many_persons #=&gt; persons created so far: 1
+helen = Person.new("Helen")
+
+mark.how_many_persons #=&gt; persons created so far: 2
+helen.how_many_persons #=&gt; persons created so far: 2
+# you could either ask mark or helen
+</code></pre></div></div>
+<p>추가로, 전역 변수 앞에는 $ 붙습니다. 이러한 프로그램은 프로그램의 어느 곳에서나 사용할 수 있으므로 현명하게 사용하십시오.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$total_animals = 0
+
+class Cat
+  def initialize
+    $total_animals += 1
+  end
+end
+
+class Dog
+  def initialize
+    $total_animals += 1
+  end
+end
+
+bob = Cat.new()
+puts $total_animals #=&gt; 1
+fred = Dog.new()
+puts $total_animals #=&gt; 2
+</code></pre></div></div>
+
+
+<ul class="taxonomy__index">
+  
+  
+    <li>
+      <a href="#2020">
+        <strong>2020</strong> <span class="taxonomy__count">2</span>
+      </a>
+    </li>
+  
+</ul>
+
+
+
+  <section id="2020" class="taxonomy__section">
+    <h2 class="archive__subtitle">2020</h2>
+    <div class="entries-list">
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/development/" rel="permalink">A list of animals
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+      
+        
+
+
+
+<div class="list__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/note/study-list/" rel="permalink">공부해야할 것
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">php tdd
+</p>
+  </article>
+</div>
+
+      
+    </div>
+    <a href="#page-title" class="back-to-top">Back to top &uarr;</a>
+  </section>
+
+
+  </div>
+</div>
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Park Jun Ho. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
